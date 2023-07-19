@@ -5,10 +5,11 @@ import org.springframework.stereotype.Service;
 import ru.kata.spring.boot_security.demo.model.User;
 import ru.kata.spring.boot_security.demo.repository.UserRepository;
 import java.util.List;
+import java.util.Set;
 
 @Service
 public class UserServiceImp implements UserService {
-    @Autowired
+
     private final UserRepository userRepository;
 
     @Autowired
@@ -33,8 +34,8 @@ public class UserServiceImp implements UserService {
     }
 
     @Override
-    public List<User> getAllUsers() {
-        return (List<User>) userRepository.findAll();
+    public Set<User> getAllUsers() {
+        return (Set<User>) userRepository.findAll();
     }
 
 }

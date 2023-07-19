@@ -32,22 +32,22 @@ public class User implements UserDetails {
     @Column(name = "password")
     private String password;
 
-    @ManyToMany(cascade = CascadeType.ALL,fetch = FetchType.EAGER)
+    @ManyToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     @JoinColumn
-    private List<Role> rolesList;
+    private Set<Role> rolesSet;
 
 
     public User() {
         this.birthday = Date.from(Instant.now());
     }
 
-    public User(String name, String gender, String username, String password, List<Role> rolesList) {
+    public User(String name, String gender, String username, String password, Set<Role> rolesSet) {
         this.name = name;
         this.birthday = Date.from(Instant.now());
         this.gender = gender;
         this.username = username;
         this.password = password;
-        this.rolesList = rolesList;
+        this.rolesSet = rolesSet;
     }
 
     public String getBirthday() {
@@ -62,7 +62,7 @@ public class User implements UserDetails {
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        return getRolesList();
+        return getRolesSet();
     }
 
     @Override
