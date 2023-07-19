@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>New User</title>
+</head>
+<body>
+<fieldset>
+    <form th:method="put" th:action="@{/users/create}" th:object="${user}">
+        <input type="hidden" name="_method" value="put">
+        <legend>Персональная информация</legend>
+        <br>
+        <label for="name">Имя:</label>
+        <input type="text" th:field="*{name}" id="name"/>
+        </br>
+        <br>
+        <label for="birthday">Дата Рождения:</label>
+        <input type="date" th:field="*{birthday}" id="birthday"/>
+        <br/>
+        <br>
+        <label>Пол:</label>
+        <label>
+            <input type="radio" th:field="*{gender}" name="gender" value="Man">Man
+        </label>
+        <label>
+            <input type="radio" th:field="*{gender}" name="gender" value="Woman">Woman
+        </label>
+        <br/>
+        <p>
+            <label>Roles:
+                <input type="checkbox" name="roles"
+                       th:each="role : ${allRoles}"
+                       th:text="${role.getNameRole()}"
+                       th:value="${role.getIdRole()}"
+                />
+            </label>
+        </p>
+        <br>
+        <input type="submit" value="Добавить"/>
+        <input type="reset">
+        </br>
+    </form>
+</fieldset>
+</body>
+</html>

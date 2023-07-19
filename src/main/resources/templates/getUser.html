@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8"/>
+    <title>Loop</title>
+    <style>
+        table th, table td {
+            padding: 5px;
+        }
+
+        .row {
+            font-style: italic;
+        }
+
+        .even-row {
+            color: #265f6c;
+        }
+
+        .odd-row {
+            color: #082c3f;
+        }
+    </style>
+</head>
+<body>
+<fieldset>
+    <legend><h1>Пользователи:</h1></legend>
+    <table border="1" cellpadding="10">
+        <tr>
+            <th>No</th>
+            <th>Имя пользователя</th>
+            <th>Дата Рождения</th>
+            <th>Пол</th>
+            <th>Опции</th>
+        </tr>
+        <tr th:each="user, state : ${users}" class="row" th:classappend="${state.odd} ? 'odd-row' : 'even-row'">
+            <td th:utext="${state.count}">No</td>
+            <td th:utext="${user.getName()}">Имя</td>
+            <td th:utext="${user.getBirthday()}">Дата</td>
+            <td th:utext="${user.getGender()}">Пол</td>
+            <td>
+                <form th:method="get" th:action="@{/users/{id}(id=${user.getId()})}">
+                    <input type="submit" value="Редактировать"/></form>
+                <form th:method="delete" th:action="@{/users/delete/{id}(id=${user.getId()})}">
+                    <input type="submit" value="Удалить"/></form>
+            </td>
+        </tr>
+
+    </table>
+    <br>
+    <form th:method="get" th:action="@{/users/new}">
+        <input type="submit" value="Добавить пользователя"/>
+    </form>
+    </br>
+</fieldset>
+</body>
+</html>
