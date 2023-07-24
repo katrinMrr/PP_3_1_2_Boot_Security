@@ -30,6 +30,7 @@
             <th>Имя пользователя</th>
             <th>Дата Рождения</th>
             <th>Пол</th>
+            <th>Роль</th>
             <th>Опции</th>
         </tr>
         <tr th:each="user, state : ${users}" class="row" th:classappend="${state.odd} ? 'odd-row' : 'even-row'">
@@ -37,20 +38,23 @@
             <td th:utext="${user.getName()}">Имя</td>
             <td th:utext="${user.getBirthday()}">Дата</td>
             <td th:utext="${user.getGender()}">Пол</td>
+            <td th:utext="${user.getRolesSet()}">Роль</td>
             <td>
-                <form th:method="get" th:action="@{/users/{id}(id=${user.getId()})}">
+                <form th:method="get" th:action="@{/admin/{id}(id=${user.getId()})}">
                     <input type="submit" value="Редактировать"/></form>
-                <form th:method="delete" th:action="@{/users/delete/{id}(id=${user.getId()})}">
+                <form th:method="delete" th:action="@{/admin/delete/{id}(id=${user.getId()})}">
                     <input type="submit" value="Удалить"/></form>
             </td>
         </tr>
-
     </table>
     <br>
-    <form th:method="get" th:action="@{/users/new}">
+    <form th:method="get" th:action="@{/admin/new}">
         <input type="submit" value="Добавить пользователя"/>
     </form>
     </br>
+    <th:authorize access="isAuthenticated()">
+        <h4><a href="/logout">Выйти</a></h4>
+    </th:authorize>
 </fieldset>
 </body>
 </html>

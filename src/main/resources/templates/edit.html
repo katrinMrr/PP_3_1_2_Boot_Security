@@ -5,10 +5,9 @@
     <title>Update user</title>
 </head>
 <body>
-<form th:method="patch" th:action="@{/users/edit/{id}(id=${user.getId()})}" th:object="${user}">
+<form th:method="patch" th:action="@{/admin/edit/{id}(id=${user.getId()})}" th:object="${user}">
     <fieldset>
-        <legend>Персональная информация</legend>
-        <br>
+        <legend><h2>Персональная информация</h2></legend>
         <label for="name">Имя:</label>
         <input type="text" th:field="*{name}" id="name"/>
         </br>
@@ -25,6 +24,11 @@
             <input type="radio" th:field="*{gender}" name="gender" value="Woman">Woman
         </label>
         <br/>
+        <p>
+            <label>Админ:
+                <input type="checkbox" th:checked="${isAdmin}" name="admin"/>
+            </label>
+        </p>
         <br>
         <input type="submit" value="Внести изменения"/>
         <input type="reset">

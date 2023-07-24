@@ -5,6 +5,7 @@ import org.springframework.stereotype.Service;
 import ru.kata.spring.boot_security.demo.model.Role;
 import ru.kata.spring.boot_security.demo.repository.RoleRepository;
 
+import java.util.HashSet;
 import java.util.Set;
 
 
@@ -15,11 +16,19 @@ public class RoleServiceImp implements RoleService {
 
     @Override
     public Set<Role> getAllRoles() {
-        return (Set<Role>) roleRepository.findAll();
+        Set<Role> set = new HashSet<>();
+        Iterable<Role> iterable = roleRepository.findAll();
+        iterable.forEach(set::add);
+        return set;
     }
 
     @Override
     public void saveOrUpdateRole(Role role) {
         roleRepository.save(role);
+    }
+
+    @Override
+    public Role findByNameRole(String name) {
+        return roleRepository.findByNameRole(name);
     }
 }

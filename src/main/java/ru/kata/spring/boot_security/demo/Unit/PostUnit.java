@@ -11,6 +11,7 @@ import javax.annotation.PostConstruct;
 
 @Component
 public class PostUnit {
+
     @Autowired
     private UserService userService;
     @Autowired
@@ -18,11 +19,13 @@ public class PostUnit {
 
     @PostConstruct
     public void postConstruct() {
-        roleService.saveOrUpdateRole(new Role("admin"));
+        roleService.saveOrUpdateRole(new Role("ROLE_ADMIN"));
+        roleService.saveOrUpdateRole(new Role("ROLE_USER"));
 
-
-        User adminUser = new User("Katya", "Woman", "admin", "321", roleService.getAllRoles());
+        String password = "321";
+        User adminUser = new User("Katya", "Woman", "admin", password, roleService.getAllRoles());
         userService.saveOrUpdateUser(adminUser);
+        System.out.println("username = " + adminUser.getUsername() + " password = " + password);
 
     }
 }

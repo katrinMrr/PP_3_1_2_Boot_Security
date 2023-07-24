@@ -7,5 +7,6 @@ import ru.kata.spring.boot_security.demo.model.User;
 
 @Repository
 public interface UserRepository extends CrudRepository<User, Long> {
+    User findByUsername(String login);
 
 }

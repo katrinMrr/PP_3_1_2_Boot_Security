@@ -5,10 +5,18 @@
     <title>New User</title>
 </head>
 <body>
-<fieldset>
-    <form th:method="put" th:action="@{/users/create}" th:object="${user}">
-        <input type="hidden" name="_method" value="put">
-        <legend>Персональная информация</legend>
+
+<form th:method="put" th:action="@{/admin/create}" th:object="${user}">
+    <input type="hidden" name="_method" value="put">
+    <fieldset>
+        <legend><h2>Персональная информация</h2></legend>
+        <label for="username">Логин:</label>
+        <input type="text" th:field="*{username}" id="username"/>
+        </br>
+        <br>
+        <label for="password">Пароль:</label>
+        <input type="password" th:field="*{password}" id="password"/>
+        </br>
         <br>
         <label for="name">Имя:</label>
         <input type="text" th:field="*{name}" id="name"/>
@@ -27,19 +35,16 @@
         </label>
         <br/>
         <p>
-            <label>Roles:
-                <input type="checkbox" name="roles"
-                       th:each="role : ${allRoles}"
-                       th:text="${role.getNameRole()}"
-                       th:value="${role.getIdRole()}"
-                />
+            <label for="admin">Админ:
+                <input type="checkbox" th:checked="${isAdmin}" name="admin" id="admin"/>
             </label>
         </p>
         <br>
         <input type="submit" value="Добавить"/>
         <input type="reset">
         </br>
-    </form>
-</fieldset>
+    </fieldset>
+</form>
+
 </body>
 </html>
