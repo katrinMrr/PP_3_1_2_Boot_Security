@@ -6,6 +6,7 @@
 </head>
 <body>
 <form th:method="patch" th:action="@{/admin/edit/{id}(id=${user.getId()})}" th:object="${user}">
+    <input type="hidden" name="_method" value="patch">
     <fieldset>
         <legend><h2>Персональная информация</h2></legend>
         <label for="name">Имя:</label>

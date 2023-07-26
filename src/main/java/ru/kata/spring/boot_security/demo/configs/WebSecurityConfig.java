@@ -18,7 +18,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     private final SuccessUserHandler successUserHandler;
     @Autowired
     @Lazy
-    public UserServiceImp userServiceImp;
+    public UserServiceImp userService;
 
     @Bean
     public BCryptPasswordEncoder passwordEncoder() {
@@ -49,7 +49,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Autowired
     protected void configureGlobal(AuthenticationManagerBuilder auth) throws Exception {
-        auth.userDetailsService(userServiceImp);
+        auth.userDetailsService(userService);
     }
 
 

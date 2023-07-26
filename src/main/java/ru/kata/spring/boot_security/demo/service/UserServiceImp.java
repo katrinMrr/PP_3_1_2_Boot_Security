@@ -6,6 +6,7 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import ru.kata.spring.boot_security.demo.model.User;
 import ru.kata.spring.boot_security.demo.repository.UserRepository;
 
@@ -15,9 +16,10 @@ import java.util.Set;
 @Service
 public class UserServiceImp implements UserService, UserDetailsService {
     @Autowired
-    BCryptPasswordEncoder bCryptPasswordEncoder;
+    private BCryptPasswordEncoder bCryptPasswordEncoder;
     @Autowired
-    RoleService roleService;
+    private RoleService roleService;
+
     private final UserRepository userRepository;
 
     @Autowired
@@ -25,6 +27,7 @@ public class UserServiceImp implements UserService, UserDetailsService {
         this.userRepository = userRepository;
     }
 
+    @Transactional
     @Override
     public boolean saveOrUpdateUser(User user) {
         if (user.getId() == null && userRepository.findByUsername(user.getUsername()) != null) {
@@ -39,6 +42,7 @@ public class UserServiceImp implements UserService, UserDetailsService {
         return true;
     }
 
+    @Transactional
     @Override
     public boolean deleteUser(Long id) {
         if (userRepository.findById(id).isPresent()) {
@@ -49,12 +53,12 @@ public class UserServiceImp implements UserService, UserDetailsService {
     }
 
     @Override
-    public User getUserById(Long id) {
+    public User findUserByID(Long id) {
         return userRepository.findById(id).orElse(null);
     }
 
     @Override
-    public Set<User> getAllUsers() {
+    public Set<User> findAllUsers() {
         Set<User> set = new HashSet<>();
         Iterable<User> iterable = userRepository.findAll();
         iterable.forEach(set::add);

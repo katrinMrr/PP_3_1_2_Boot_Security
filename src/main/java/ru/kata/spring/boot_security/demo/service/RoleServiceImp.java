@@ -21,7 +21,6 @@ public class RoleServiceImp implements RoleService {
         iterable.forEach(set::add);
         return set;
     }
-
     @Override
     public void saveOrUpdateRole(Role role) {
         roleRepository.save(role);

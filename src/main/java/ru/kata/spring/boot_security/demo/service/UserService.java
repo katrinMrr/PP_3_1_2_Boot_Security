@@ -10,9 +10,9 @@ public interface UserService {
 
     boolean deleteUser(Long id);
 
-    User getUserById(Long id);
+    User findUserByID(Long id);
 
-    Set<User> getAllUsers();
+    Set<User> findAllUsers();
 
     User findByUsername(String login);
 

@@ -22,7 +22,7 @@ public class AdminController {
 
     @GetMapping()
     public String printUsers(ModelMap model) {
-        model.addAttribute("users", userService.getAllUsers());
+        model.addAttribute("users", userService.findAllUsers());
         return "admin";
     }
 
@@ -33,7 +33,7 @@ public class AdminController {
         return mav;
     }
 
-    @PostMapping("/create")
+    @PutMapping("/create")
     public String createUser(@ModelAttribute("user") User user, @RequestParam(value = "admin", required = false) String role) {
         user.setRolesSet(new HashSet<>());
         if (role != null) {
@@ -45,32 +45,25 @@ public class AdminController {
 
     @GetMapping("/{id}")
     public String showUserById(ModelMap model, @PathVariable("id") Long id) {
-        User user = userService.getUserById(id);
+        User user = userService.findUserByID(id);
         model.addAttribute("user", user);
         model.addAttribute("isAdmin", user.getRolesSet().contains(roleService.findByNameRole("ROLE_ADMIN")));
         return "edit";
     }
 
-    @PostMapping("/edit/{id}")
+    @PatchMapping("/edit/{id}")
     public String updateUser(@ModelAttribute("user") User user, @RequestParam(value = "admin", required = false) String role) {
         if (role != null) {
-            User user1 = userService.getUserById(user.getId());
-            user.setRolesSet(user1.getRolesSet());
-            user.setUsername(user1.getUsername());
-            user.setPassword(user1.getPassword());
-            user.getRolesSet().add(roleService.findByNameRole("ROLE_ADMIN"));
+            user.setRolesSet(roleService.getAllRoles());
         } else {
-            User user1 = userService.getUserById(user.getId());
-            user.setRolesSet(user1.getRolesSet());
-            user.setUsername(user1.getUsername());
-            user.setPassword(user1.getPassword());
+            user.setRolesSet(roleService.getAllRoles());
             user.getRolesSet().remove(roleService.findByNameRole("ROLE_ADMIN"));
         }
         userService.saveOrUpdateUser(user);
         return "redirect:/admin";
     }
 
-    @PostMapping("/delete/{id}")
+    @DeleteMapping("/delete/{id}")
     public String deleteUser(@PathVariable("id") Long id) {
         userService.deleteUser(id);
         return "redirect:/admin";
