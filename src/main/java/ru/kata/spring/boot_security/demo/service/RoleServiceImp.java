@@ -11,8 +11,11 @@ import java.util.Set;
 
 @Service
 public class RoleServiceImp implements RoleService {
-    @Autowired
-    private RoleRepository roleRepository;
+    private final RoleRepository roleRepository;
+
+    public RoleServiceImp(RoleRepository roleRepository) {
+        this.roleRepository = roleRepository;
+    }
 
     @Override
     public Set<Role> getAllRoles() {

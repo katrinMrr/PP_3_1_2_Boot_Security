@@ -11,8 +11,12 @@ import ru.kata.spring.boot_security.demo.service.UserService;
 
 @Controller
 public class UserController {
-    @Autowired
+    final
     UserService userService;
+
+    public UserController(UserService userService) {
+        this.userService = userService;
+    }
 
     @GetMapping("/user")
     public String showUserById(ModelMap model) {

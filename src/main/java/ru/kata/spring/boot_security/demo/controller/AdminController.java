@@ -1,6 +1,5 @@
 package ru.kata.spring.boot_security.demo.controller;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.*;
@@ -10,15 +9,19 @@ import ru.kata.spring.boot_security.demo.service.RoleService;
 import ru.kata.spring.boot_security.demo.service.UserService;
 
 import java.util.HashSet;
+import java.util.stream.Collectors;
 
 
 @Controller
 @RequestMapping("/admin")
 public class AdminController {
-    @Autowired
-    private UserService userService;
-    @Autowired
-    private RoleService roleService;
+    private final UserService userService;
+    private final RoleService roleService;
+
+    public AdminController(UserService userService, RoleService roleService) {
+        this.userService = userService;
+        this.roleService = roleService;
+    }
 
     @GetMapping()
     public String printUsers(ModelMap model) {
@@ -56,8 +59,8 @@ public class AdminController {
         if (role != null) {
             user.setRolesSet(roleService.getAllRoles());
         } else {
-            user.setRolesSet(roleService.getAllRoles());
-            user.getRolesSet().remove(roleService.findByNameRole("ROLE_ADMIN"));
+            user.setRolesSet(roleService.getAllRoles().stream().filter(r -> r.getNameRole()
+                    .equals("ROLE_USER")).collect(Collectors.toSet()));
         }
         userService.saveOrUpdateUser(user);
         return "redirect:/admin";
