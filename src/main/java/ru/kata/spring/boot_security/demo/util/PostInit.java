@@ -1,4 +1,4 @@
-package ru.kata.spring.boot_security.demo.unit;
+package ru.kata.spring.boot_security.demo.util;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -10,7 +10,7 @@ import ru.kata.spring.boot_security.demo.service.UserService;
 import javax.annotation.PostConstruct;
 
 @Component
-public class PostUnit {
+public class PostInit {
 
     @Autowired
     private UserService userService;
@@ -27,5 +27,12 @@ public class PostUnit {
         userService.saveOrUpdateUser(adminUser);
         System.out.println("username = " + adminUser.getUsername() + " password = " + password);
 
+
+
+        User nUser1 = new User("user2", "Woman", "user2", password, roleService.getAllRoles());
+        userService.saveOrUpdateUser(nUser1);
+
+        User nUser2 = new User("user1", "Man", "user1", password, roleService.getAllRoles());
+        userService.saveOrUpdateUser(nUser2);
     }
 }

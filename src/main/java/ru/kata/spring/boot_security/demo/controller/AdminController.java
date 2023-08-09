@@ -1,5 +1,7 @@
 package ru.kata.spring.boot_security.demo.controller;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.*;
@@ -8,6 +10,7 @@ import ru.kata.spring.boot_security.demo.model.User;
 import ru.kata.spring.boot_security.demo.service.RoleService;
 import ru.kata.spring.boot_security.demo.service.UserService;
 
+import java.security.Principal;
 import java.util.HashSet;
 import java.util.stream.Collectors;
 
@@ -17,15 +20,24 @@ import java.util.stream.Collectors;
 public class AdminController {
     private final UserService userService;
     private final RoleService roleService;
+    private final BCryptPasswordEncoder bCryptPasswordEncoder;
 
-    public AdminController(UserService userService, RoleService roleService) {
+    @Autowired
+    public AdminController(UserService userService, RoleService roleService, BCryptPasswordEncoder bCryptPasswordEncoder) {
         this.userService = userService;
         this.roleService = roleService;
+        this.bCryptPasswordEncoder = bCryptPasswordEncoder;
     }
 
     @GetMapping()
-    public String printUsers(ModelMap model) {
-        model.addAttribute("users", userService.findAllUsers());
+    public String printUsers(ModelMap model, Principal principal) {
+        var userSet = userService.findAllUsers();
+        userSet.forEach(user -> user.setPassword(null));
+        model.addAttribute("users", userSet);
+        User user = userService.findByUsername(principal.getName());
+        user.getRolesSet().forEach(r -> r.setNameRole(r.getNameRole().substring(5)));
+        model.addAttribute("user", user);
+        model.addAttribute("userForm", new User());
         return "admin";
     }
 
@@ -37,11 +49,13 @@ public class AdminController {
     }
 
     @PutMapping("/create")
-    public String createUser(@ModelAttribute("user") User user, @RequestParam(value = "admin", required = false) String role) {
+    public String createUser(@ModelAttribute("user") User user, @RequestParam(value = "createRole") String role,
+                             @RequestParam(value = "createGender") String genderMan) {
         user.setRolesSet(new HashSet<>());
-        if (role != null) {
-            user.getRolesSet().add(roleService.findByNameRole("ROLE_ADMIN"));
-        }
+        user.setRolesSet(!role.equals("USER") ? roleService.getAllRoles()
+                : roleService.getAllRoles().stream().filter(r -> r.getNameRole()
+                .equals("ROLE_USER")).collect(Collectors.toSet()));
+        user.setGender(genderMan != null ? "Man" : "Woman");
         userService.saveOrUpdateUser(user);
         return "redirect:/admin";
     }
@@ -55,13 +69,16 @@ public class AdminController {
     }
 
     @PatchMapping("/edit/{id}")
-    public String updateUser(@ModelAttribute("user") User user, @RequestParam(value = "admin", required = false) String role) {
-        if (role != null) {
-            user.setRolesSet(roleService.getAllRoles());
-        } else {
-            user.setRolesSet(roleService.getAllRoles().stream().filter(r -> r.getNameRole()
-                    .equals("ROLE_USER")).collect(Collectors.toSet()));
-        }
+    public String updateUser(@ModelAttribute("user") User user,
+                             @RequestParam(value = "editRole", required = false) String role,
+                             @RequestParam(value = "editGender", required = false) String genderMan) {
+        user.setGender(genderMan != null ? "Man" : "Woman");
+        user.setPassword(user.getPassword() == null || user.getPassword().equals("")
+                ? userService.findUserByID(user.getId()).getPassword()
+                : bCryptPasswordEncoder.encode(user.getPassword()));
+        user.setRolesSet(!role.equals("USER") ? roleService.getAllRoles()
+                : roleService.getAllRoles().stream().filter(r -> r.getNameRole()
+                .equals("ROLE_USER")).collect(Collectors.toSet()));
         userService.saveOrUpdateUser(user);
         return "redirect:/admin";
     }
@@ -71,6 +88,5 @@ public class AdminController {
         userService.deleteUser(id);
         return "redirect:/admin";
     }
-
 }
 
