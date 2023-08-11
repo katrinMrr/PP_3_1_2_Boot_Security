@@ -58,6 +58,7 @@
                                                 <th scope="col">Name</th>
                                                 <th scope="col">Birthday</th>
                                                 <th scope="col">Gender</th>
+                                                <th scope="col">Email</th>
                                                 <th scope="col">Role</th>
                                                 <th scope="col">Edit</th>
                                                 <th scope="col">Delete</th>
@@ -69,6 +70,7 @@
                                                 <td><p th:utext="${user.getName()}">Name</p></td>
                                                 <td><p th:utext="${user.getBirthday()}">Birthday</td>
                                                 <td th:utext="${user.getGender()}">Gender</td>
+                                                <td th:utext="${user.getUsername()}">Username</td>
                                                 <td th:utext="${user.getRolesSet()}">Roles</td>
                                                 <td>
                                                     <!-- Кнопка-триггер модального окна -->
@@ -83,19 +85,21 @@
                                                          aria-labelledby="editModalLabel" aria-hidden="true">
                                                         <div class="modal-dialog">
                                                             <div class="modal-content">
-                                                                <div class="modal-header">
-                                                                    <h1 class="modal-title fs-5" id="editModalLabel">
-                                                                        Edit user</h1>
-                                                                    <button type="button" class="btn-close"
-                                                                            data-bs-dismiss="modal"
-                                                                            aria-label="Закрыть"></button>
-                                                                </div>
-                                                                <div class="modal-body">
-                                                                    <div class="mr-3 ml-3">
-                                                                        <table class="table table-borderless">
-                                                                            <form th:method="get"
-                                                                                  class="row mb-3 align-items-center "
-                                                                                  novalidate="">
+                                                                <table class="table mb-0 table-borderless">
+                                                                    <form class="row align-items-center "
+                                                                          novalidate=""
+                                                                          th:method="patch"
+                                                                          th:action="@{/admin/edit/{id}(id=${user.getId()})}">
+                                                                        <div class="modal-header">
+                                                                            <h1 class="modal-title fs-5"
+                                                                                id="editModalLabel">
+                                                                                Edit user</h1>
+                                                                            <button type="button" class="btn-close"
+                                                                                    data-bs-dismiss="modal"
+                                                                                    aria-label="Закрыть"></button>
+                                                                        </div>
+                                                                        <div class="modal-body">
+                                                                            <div class="mr-3 ml-3">
                                                                                 <div class="text-center">
                                                                                     <div class="row mb-3 d-flex justify-content-center">
                                                                                         <label class="form-label "><b>ID</b></label>
@@ -104,8 +108,7 @@
                                                                                                th:value="*{user.getId()}"
                                                                                                th:name="id" disabled
                                                                                                style="width:200px"
-                                                                                               readonly
-                                                                                               required>
+                                                                                               readonly>
                                                                                     </div>
                                                                                     <div class="row mb-3 d-flex justify-content-center">
                                                                                         <label class="form-label"><b>Name</b></label>
@@ -130,17 +133,17 @@
                                                                                             <input class="form-check-input"
                                                                                                    type="radio"
                                                                                                    name="editGender"
-                                                                                                   id="editGenderMan">
-                                                                                            <label for="editGenderMan"
-                                                                                                   class="form-check-label">Man</label>
+                                                                                                   value="Man"
+                                                                                                   required>
+                                                                                            <label class="form-check-label">Man</label>
                                                                                         </div>
                                                                                         <div class="form-check form-check-inline col d-flex justify-content-start">
                                                                                             <input class="form-check-input"
                                                                                                    type="radio"
                                                                                                    name="editGender"
-                                                                                                   id="editGenderWoman">
-                                                                                            <label for="editGenderWoman"
-                                                                                                   class="form-check-label">Woman</label>
+                                                                                                   value="Woman"
+                                                                                                   required>
+                                                                                            <label class="form-check-label">Woman</label>
                                                                                         </div>
                                                                                     </div>
                                                                                     <div class="row mb-3 d-flex justify-content-center">
@@ -151,7 +154,7 @@
                                                                                                th:name="username"
                                                                                                style="width:200px"
                                                                                                aria-describedby="inputGroupPrepend"
-                                                                                               required="">
+                                                                                               required>
                                                                                     </div>
                                                                                     <div class="row mb-3 d-flex justify-content-center">
                                                                                         <label class="form-label"><b>Password</b></label>
@@ -159,40 +162,35 @@
                                                                                                class="form-control"
                                                                                                th:name="password"
                                                                                                th:value="*{user.getPassword()}"
-                                                                                               style="width:200px"
-                                                                                               required="">
+                                                                                               style="width:200px">
                                                                                     </div>
                                                                                     <div class="row mb-3 d-flex justify-content-center">
                                                                                         <label class="form-label"><b>Role</b></label>
-                                                                                        <select class="form-select"
-                                                                                                name="editRole"
-                                                                                                id="editRole"
+                                                                                        <select name="editRole"
                                                                                                 style="width:200px"
                                                                                                 required size="2">
                                                                                             <option value="ADMIN">
                                                                                                 ADMIN
                                                                                             </option>
-                                                                                            <option value="USER">USER
+                                                                                            <option value="USER">
+                                                                                                USER
                                                                                             </option>
                                                                                         </select>
                                                                                     </div>
                                                                                 </div>
-                                                                            </form>
-                                                                        </table>
-                                                                    </div>
-                                                                </div>
-                                                                <div class="modal-footer">
-                                                                    <button type="button"
-                                                                            class="btn btn-secondary"
-                                                                            data-bs-dismiss="modal">
-                                                                        Close
-                                                                    </button>
-                                                                    <form th:method="patch"
-                                                                          th:action="@{/admin/edit/{id}(id=${user.getId()})}"
-                                                                          th:object="${user}">
-                                                                        <input type="submit" class="bg-primary"
-                                                                               value="Edit"/></form>
-                                                                </div>
+                                                                            </div>
+                                                                        </div>
+                                                                        <div class="modal-footer">
+                                                                            <button type="button"
+                                                                                    class="btn btn-secondary"
+                                                                                    data-bs-dismiss="modal">Close
+                                                                            </button>
+                                                                            <button type="submit"
+                                                                                    class="btn btn-primary">Edit
+                                                                            </button>
+                                                                        </div>
+                                                                    </form>
+                                                                </table>
                                                             </div>
                                                         </div>
                                                     </div>
@@ -309,16 +307,17 @@
                                     <div class="mr-3 ml-3">
                                         <table class="table table-borderless">
                                             <form th:method="put" th:action="@{/admin/create}" th:object="${userForm}"
-                                                  class="row mb-3 align-items-center " novalidate="">
+                                                  class="row mb-3 align-items-center" novalidate=""
+                                                  data-toggle="validator" role="form">
                                                 <input type="hidden" name="_method" value="put">
                                                 <div class="text-center">
                                                     <div class="row mb-3 d-flex justify-content-center">
                                                         <label for="validationCustom01"
                                                                class="form-label "><b>Name</b></label>
-                                                        <input type="text" class="form-control " id="validationCustom01"
+                                                        <input type="text" class="form-control"
+                                                               id="validationCustom01"
                                                                th:field="*{name}"
-                                                               style="width:25%;background-color:navajowhite"
-                                                               required>
+                                                               style="width:25%;background-color:navajowhite" required>
                                                     </div>
                                                     <div class="row mb-3 d-flex justify-content-center ">
                                                         <label for="validationCustom02"
@@ -328,15 +327,13 @@
                                                     </div>
                                                     <div class="row mb-3 ">
                                                         <label class="form-check-label"><b>Gender</b></label>
-                                                        <div class="form-check form-check-inline col d-flex justify-content-end"
-                                                             th:field="*{gender}">
+                                                        <div class="form-check form-check-inline col d-flex justify-content-end">
                                                             <input class="form-check-input" type="radio" value="Man"
                                                                    name="createGender"
                                                                    id="genderMan">
                                                             <label class="form-check-label" for="genderMan">Man</label>
                                                         </div>
-                                                        <div class="form-check form-check-inline col d-flex justify-content-start"
-                                                             th:field="*{gender}">
+                                                        <div class="form-check form-check-inline col d-flex justify-content-start">
                                                             <input class="form-check-input" type="radio" value="Woman"
                                                                    name="createGender"
                                                                    id="genderWoman">
@@ -347,19 +344,18 @@
                                                     <div class="row mb-3 d-flex justify-content-center">
                                                         <label for="validationCustomUsername"
                                                                class="form-label"><b>Email</b></label>
-                                                        <input type="text" class="form-control"
-                                                               th:field="*{username}"
-                                                               style="width:25%;background-color:navajowhite"
-                                                               id="validationCustomUsername"
-                                                               aria-describedby="inputGroupPrepend" required>
+                                                            <input type="text" class="form-control"
+                                                                   th:field="*{username}"
+                                                                   style="width:25%;background-color:navajowhite"
+                                                                   id="validationCustomUsername"
+                                                                   aria-describedby="inputGroupPrepend2" required>
                                                     </div>
                                                     <div class="row mb-3 d-flex justify-content-center">
                                                         <label for="validationCustom04"
                                                                class="form-label"><b>Password</b></label>
                                                         <input type="password" class="form-control"
                                                                id="validationCustom04"
-                                                               th:field="*{password}" style="width:25%"
-                                                               required>
+                                                               th:field="*{password}" style="width:25%">
                                                     </div>
 
                                                     <div class="row mb-3 d-flex justify-content-center">

@@ -11,7 +11,6 @@ import ru.kata.spring.boot_security.demo.service.RoleService;
 import ru.kata.spring.boot_security.demo.service.UserService;
 
 import java.security.Principal;
-import java.util.HashSet;
 import java.util.stream.Collectors;
 
 
@@ -49,13 +48,13 @@ public class AdminController {
     }
 
     @PutMapping("/create")
-    public String createUser(@ModelAttribute("user") User user, @RequestParam(value = "createRole") String role,
-                             @RequestParam(value = "createGender") String genderMan) {
-        user.setRolesSet(new HashSet<>());
-        user.setRolesSet(!role.equals("USER") ? roleService.getAllRoles()
+    public String createUser(@ModelAttribute("user") User user,
+                             @RequestParam(value = "createRole") String role,
+                             @RequestParam(value = "createGender", required = false) String gender) {
+        user.setRolesSet(role.equals("ADMIN") ? roleService.getAllRoles()
                 : roleService.getAllRoles().stream().filter(r -> r.getNameRole()
                 .equals("ROLE_USER")).collect(Collectors.toSet()));
-        user.setGender(genderMan != null ? "Man" : "Woman");
+        user.setGender(gender);
         userService.saveOrUpdateUser(user);
         return "redirect:/admin";
     }
@@ -71,14 +70,17 @@ public class AdminController {
     @PatchMapping("/edit/{id}")
     public String updateUser(@ModelAttribute("user") User user,
                              @RequestParam(value = "editRole", required = false) String role,
-                             @RequestParam(value = "editGender", required = false) String genderMan) {
-        user.setGender(genderMan != null ? "Man" : "Woman");
+                             @RequestParam(value = "editGender", required = false) String gender) {
+        User userFromBase = userService.findUserByID(user.getId());
+        user.setGender(gender == null ? "" : gender);
         user.setPassword(user.getPassword() == null || user.getPassword().equals("")
-                ? userService.findUserByID(user.getId()).getPassword()
+                ? userFromBase.getPassword()
                 : bCryptPasswordEncoder.encode(user.getPassword()));
-        user.setRolesSet(!role.equals("USER") ? roleService.getAllRoles()
+        user.setRolesSet(role != null && role.equals("ADMIN")
+                ? roleService.getAllRoles()
                 : roleService.getAllRoles().stream().filter(r -> r.getNameRole()
                 .equals("ROLE_USER")).collect(Collectors.toSet()));
+
         userService.saveOrUpdateUser(user);
         return "redirect:/admin";
     }
