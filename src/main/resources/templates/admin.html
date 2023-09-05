@@ -116,7 +116,7 @@
                                                                                                class="form-control"
                                                                                                style="width:200px"
                                                                                                th:value="*{user.getName()}"
-                                                                                               th:name="name"
+                                                                                               name="editName"
                                                                                                required>
                                                                                     </div>
                                                                                     <div class="row mb-3 d-flex justify-content-center ">
@@ -124,7 +124,7 @@
                                                                                         <input type="date"
                                                                                                class="form-control"
                                                                                                th:value="*{user.getBirthday()}"
-                                                                                               th:name="birthday"
+                                                                                               name="editBirthday"
                                                                                                style="width:200px">
                                                                                     </div>
                                                                                     <div class="row mb-3">
@@ -151,7 +151,7 @@
                                                                                         <input type="text"
                                                                                                class="form-control"
                                                                                                th:value="*{user.getUsername()}"
-                                                                                               th:name="username"
+                                                                                               name="editUsername"
                                                                                                style="width:200px"
                                                                                                aria-describedby="inputGroupPrepend"
                                                                                                required>
@@ -160,7 +160,7 @@
                                                                                         <label class="form-label"><b>Password</b></label>
                                                                                         <input type="password"
                                                                                                class="form-control"
-                                                                                               th:name="password"
+                                                                                               name="editPassword"
                                                                                                th:value="*{user.getPassword()}"
                                                                                                style="width:200px">
                                                                                     </div>
@@ -185,7 +185,7 @@
                                                                                     class="btn btn-secondary"
                                                                                     data-bs-dismiss="modal">Close
                                                                             </button>
-                                                                            <button type="submit"
+                                                                            <button type="submit" id="edit" name="id"
                                                                                     class="btn btn-primary">Edit
                                                                             </button>
                                                                         </div>
@@ -285,7 +285,7 @@
                                                                     </button>
                                                                     <form th:method="delete"
                                                                           th:action="@{/admin/delete/{id}(id=${user.getId()})}">
-                                                                        <input type="submit" value="Delete"
+                                                                        <input type="submit" value="Delete" name="id" id="delete"
                                                                                class="btn btn-danger"/></form>
                                                                 </div>
                                                             </div>
@@ -306,7 +306,7 @@
                                     </div>
                                     <div class="mr-3 ml-3">
                                         <table class="table table-borderless">
-                                            <form th:method="put" th:action="@{/admin/create}" th:object="${userForm}"
+                                            <form id="newUser" th:method="put" th:action="@{/admin/users/createNewUser}" th:object="${userForm}"
                                                   class="row mb-3 align-items-center" novalidate=""
                                                   data-toggle="validator" role="form">
                                                 <input type="hidden" name="_method" value="put">
@@ -315,15 +315,14 @@
                                                         <label for="validationCustom01"
                                                                class="form-label "><b>Name</b></label>
                                                         <input type="text" class="form-control"
-                                                               id="validationCustom01"
-                                                               th:field="*{name}"
+                                                               id="validationCustom01" name="name"
                                                                style="width:25%;background-color:navajowhite" required>
                                                     </div>
                                                     <div class="row mb-3 d-flex justify-content-center ">
                                                         <label for="validationCustom02"
                                                                class="form-label"><b>Birthday</b></label>
-                                                        <input type="date" class="form-control" id="validationCustom02"
-                                                               th:field="*{birthday}" style="width:25%">
+                                                        <input type="date" class="form-control" id="validationCustom02" name="birthday"
+                                                                style="width:25%">
                                                     </div>
                                                     <div class="row mb-3 ">
                                                         <label class="form-check-label"><b>Gender</b></label>
@@ -344,25 +343,23 @@
                                                     <div class="row mb-3 d-flex justify-content-center">
                                                         <label for="validationCustomUsername"
                                                                class="form-label"><b>Email</b></label>
-                                                            <input type="text" class="form-control"
-                                                                   th:field="*{username}"
-                                                                   style="width:25%;background-color:navajowhite"
-                                                                   id="validationCustomUsername"
-                                                                   aria-describedby="inputGroupPrepend2" required>
+                                                        <input type="text" class="form-control"
+                                                               style="width:25%;background-color:navajowhite"
+                                                               id="validationCustomUsername" name="email"
+                                                               aria-describedby="inputGroupPrepend2" required>
                                                     </div>
                                                     <div class="row mb-3 d-flex justify-content-center">
                                                         <label for="validationCustom04"
                                                                class="form-label"><b>Password</b></label>
                                                         <input type="password" class="form-control"
-                                                               id="validationCustom04"
-                                                               th:field="*{password}" style="width:25%">
+                                                               id="validationCustom04" name="password" style="width:25%">
                                                     </div>
 
                                                     <div class="row mb-3 d-flex justify-content-center">
                                                         <label for="validationCustom05"
                                                                class="form-label"><b>Role</b></label>
                                                         <select class="form-control" id="validationCustom05"
-                                                                name="createRole" style="width:25%"
+                                                                name="role" style="width:25%"
                                                                 required size="2">
                                                             <option value="ADMIN">ADMIN</option>
                                                             <option value="USER" selected>USER</option>
@@ -370,7 +367,7 @@
                                                     </div>
 
                                                     <div class="row mb-3 d-flex justify-content-center">
-                                                        <button class="btn btn-success" type="submit"
+                                                        <button class="btn btn-success" type="submit" onclick="validateForm(document.getElementById('newUser'))"
                                                                 style="width:25%">Add new user
                                                         </button>
                                                     </div>
@@ -432,5 +429,8 @@
 <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"
         integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM"
         crossorigin="anonymous"></script>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.2.0/jquery.min.js"></script>
+<script src="webjars/jquery/3.3.1/jquery.min.js"></script>
+<script src="js/script.js"></script>
 </body>
 </html>

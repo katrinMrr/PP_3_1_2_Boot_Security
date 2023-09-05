@@ -9,7 +9,7 @@ import java.util.Set;
 public interface UserService extends UserDetailsService {
     boolean saveOrUpdateUser(User user);
 
-    boolean deleteUser(Long id);
+    boolean deleteUserById(Long id);
 
     User findUserByID(Long id);
 
