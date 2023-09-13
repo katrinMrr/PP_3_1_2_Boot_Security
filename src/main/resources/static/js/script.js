@@ -107,6 +107,7 @@ async function newUser() {
         birthday: newUserForm.querySelector('input[name ="birthday"]').value,
         gender: newUserForm.querySelectorAll('input[name ="gender"]:checked')[0].value,
         username: newUserForm.querySelector('input[name ="username"]').value,
+        password: newUserForm.querySelector('input[name ="password"]').value,
         isAdmin: false
     }
     if (role === "ADMIN") {

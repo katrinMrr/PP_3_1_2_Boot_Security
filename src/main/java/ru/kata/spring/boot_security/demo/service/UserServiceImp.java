@@ -12,7 +12,6 @@ import ru.kata.spring.boot_security.demo.repository.UserRepository;
 import java.util.HashSet;
 import java.util.LinkedHashSet;
 import java.util.Set;
-import java.util.TreeSet;
 import java.util.stream.Collectors;
 
 @Service
@@ -36,9 +35,12 @@ public class UserServiceImp implements UserService {
         if (user.getId() == null && userRepository.findByUsername(user.getUsername()) != null) {
             return false;
         }
-
-        user.getRolesSet().add(roleService.getAllRoles().stream().filter(r -> r.getNameRole()
-                .equals("ROLE_USER")).findFirst().orElse(null));
+        if (user.isAdmin()) {
+            user.getRolesSet().addAll(roleService.getAllRoles());
+        } else {
+            user.getRolesSet().add(roleService.getAllRoles().stream().filter(r -> r.getNameRole()
+                    .equals("ROLE_USER")).findFirst().orElse(null));
+        }
         if (user.getId() == null) {
             user.setPassword(bCryptPasswordEncoder.encode(user.getPassword()));
         }
@@ -66,7 +68,7 @@ public class UserServiceImp implements UserService {
         Set<User> set = new HashSet<>();
         Iterable<User> iterable = userRepository.findAll();
         iterable.forEach(set::add);
-        set = set.stream().sorted((e1, e2) -> (int) (e1.getId()- e2.getId())).collect(Collectors.toCollection(LinkedHashSet::new));
+        set = set.stream().sorted((e1, e2) -> (int) (e1.getId() - e2.getId())).collect(Collectors.toCollection(LinkedHashSet::new));
         return set;
     }
 

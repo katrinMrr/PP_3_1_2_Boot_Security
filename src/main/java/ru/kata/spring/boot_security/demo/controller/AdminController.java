@@ -14,6 +14,7 @@ import ru.kata.spring.boot_security.demo.service.RoleService;
 import ru.kata.spring.boot_security.demo.service.UserService;
 
 import java.net.URI;
+import java.util.HashSet;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -58,10 +59,7 @@ public class AdminController {
 
     @PutMapping(value = "/new", consumes = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<User> createNewUser(@RequestBody User newUser) {
-        if (newUser.isAdmin()) {
-            newUser.setRolesSet(roleService.getAllRoles());
-        }
-        System.out.println(newUser);
+        newUser.setRolesSet(new HashSet<>());
         userService.saveOrUpdateUser(newUser);
         URI uriOfNewResource = ServletUriComponentsBuilder.fromCurrentContextPath()
                 .path(REST_URL + "/{id}").buildAndExpand(newUser.getId()).toUri();
