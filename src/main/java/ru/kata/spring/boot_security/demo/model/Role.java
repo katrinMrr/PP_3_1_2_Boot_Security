@@ -17,7 +17,7 @@ public class Role implements GrantedAuthority {
     private Long idRole;
     @Column(name = "nameRole")
     private String nameRole;
-
+    @Transient
     @ManyToMany(mappedBy = "rolesSet")
     private Set<User> userRoles;
 

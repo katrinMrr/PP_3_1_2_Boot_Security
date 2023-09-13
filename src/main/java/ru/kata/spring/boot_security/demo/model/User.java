@@ -36,6 +36,8 @@ public class User implements UserDetails {
     @Column(name = "password")
     private String password;
 
+    private boolean isAdmin = false;
+
     @ManyToMany(cascade = CascadeType.MERGE, fetch = FetchType.LAZY)
     @JoinColumn(name = "role")
     @Fetch(FetchMode.JOIN)
@@ -64,7 +66,13 @@ public class User implements UserDetails {
         this.birthday = simpleDateFormat.parse(birthday);
     }
 
+    public boolean isAdmin() {
+        return isAdmin;
+    }
 
+    public void setAdmin(boolean admin) {
+        isAdmin = admin;
+    }
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         return getRolesSet();

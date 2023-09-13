@@ -36,6 +36,7 @@ public class UserServiceImp implements UserService {
         if (user.getId() == null && userRepository.findByUsername(user.getUsername()) != null) {
             return false;
         }
+
         user.getRolesSet().add(roleService.getAllRoles().stream().filter(r -> r.getNameRole()
                 .equals("ROLE_USER")).findFirst().orElse(null));
         if (user.getId() == null) {

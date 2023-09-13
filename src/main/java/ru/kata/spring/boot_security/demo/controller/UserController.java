@@ -1,7 +1,9 @@
 package ru.kata.spring.boot_security.demo.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -23,9 +25,11 @@ public class UserController {
 
 
     @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
-    public User showUserByUsername() {
+    public ResponseEntity<User> showUserByUsername() {
         Authentication authentication =
                 SecurityContextHolder.getContext().getAuthentication();
-       return userService.findByUsername(authentication.getName());
+        User user = userService.findByUsername(authentication.getName());
+        user.getRolesSet().forEach(r -> r.setNameRole(r.getNameRole().substring(5)));
+        return new ResponseEntity<>(user, HttpStatus.OK);
     }
 }

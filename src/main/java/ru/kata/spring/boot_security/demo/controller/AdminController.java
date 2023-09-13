@@ -33,6 +33,7 @@ public class AdminController {
         this.bCryptPasswordEncoder = bCryptPasswordEncoder;
     }
 
+
     @GetMapping()
     public Set<User> printUsers() {
         Set<User> userSet = userService.findAllUsers();
@@ -40,39 +41,33 @@ public class AdminController {
         return userSet;
     }
 
-    @GetMapping("/currentUser")
-    public User currentUser() {
+    @GetMapping("/current")
+    public ResponseEntity<User> currentUser() {
         Authentication authentication =
                 SecurityContextHolder.getContext().getAuthentication();
         User user = userService.findByUsername(authentication.getName());
         user.getRolesSet().forEach(r -> r.setNameRole(r.getNameRole().substring(5)));
-        return user;
+        return new ResponseEntity<>(user, HttpStatus.OK);
     }
 
-    @GetMapping("/newUserForm")
-    public User newUserForm() {
-        return new User();
+    @GetMapping(value = "/{id}")
+    public ResponseEntity<User> getUserById(@PathVariable Long id) {
+        User user = userService.findUserByID(id);
+        return new ResponseEntity<>(user, HttpStatus.OK);
     }
 
-    @PutMapping(consumes = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<User> createNewUser(@RequestBody User newUser,
-                                              @RequestParam(value = "createRole") String role,
-                                              @RequestParam(value = "createGender", required = false) String gender) {
-        newUser.setRolesSet(role.equals("ADMIN") ? roleService.getAllRoles()
-                : roleService.getAllRoles().stream().filter(r -> r.getNameRole()
-                .equals("ROLE_USER")).collect(Collectors.toSet()));
-        newUser.setGender(gender);
+    @PutMapping(value = "/new", consumes = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<User> createNewUser(@RequestBody User newUser) {
+        if (newUser.isAdmin()) {
+            newUser.setRolesSet(roleService.getAllRoles());
+        }
+        System.out.println(newUser);
         userService.saveOrUpdateUser(newUser);
         URI uriOfNewResource = ServletUriComponentsBuilder.fromCurrentContextPath()
                 .path(REST_URL + "/{id}").buildAndExpand(newUser.getId()).toUri();
         return ResponseEntity.created(uriOfNewResource).body(newUser);
     }
 
-
-    @GetMapping("/{id}")
-    public User showUserById(@PathVariable Long id) {
-        return userService.findUserByID(id);
-    }
 
     @PatchMapping(value = "edit/{id}", consumes = MediaType.APPLICATION_JSON_VALUE)
     @ResponseStatus(HttpStatus.NO_CONTENT)
