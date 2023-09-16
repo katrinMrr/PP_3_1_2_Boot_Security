@@ -50,11 +50,12 @@ async function usersTable() {
     })
 }
 
+let currentId;
+
 async function openModal(id, modalName) {
     let modal = document.getElementById(modalName)
     const requestURL = "/admin/users/" + id;
     await fetch(requestURL).then(rs => rs.json()).then(u => {
-        console.log(u);
         modal.querySelector('input[name ="id"]').value = u.id;
         modal.querySelector('input[name ="name"]').value = u.name;
         modal.querySelector('input[name ="birthday"]').value = u.birthday;
@@ -69,27 +70,44 @@ async function openModal(id, modalName) {
         } else {
             modal.querySelector('select[name ="role"]').value = "ADMIN"
         }
-        // if (modalName === "editModal") {
-        //     edit(u.id);
-        // } else {
-        //     deleteUser(u.id);
-        // }
     })
+    currentId = id;
 }
 
-async function edit(id) {
-    const edit = "admin/users/edit/" + id
+async function editUser() {
+    const edit = "admin/users/edit/";
+    let editModal = document.getElementById("editModal");
+    let role = editModal.querySelector('select[name ="role"]')[editModal
+        .querySelector('select[name ="role"]').selectedIndex].value;
+    let editUser = {
+        id: editModal.querySelector('input[name ="id"]').value,
+        name: editModal.querySelector('input[name ="name"]:required').value,
+        birthday: editModal.querySelector('input[name ="birthday"]').value,
+        username: editModal.querySelector('input[name ="username"]:required').value,
+        password: editModal.querySelector('input[name ="password"]').value,
+    }
+    if (role === "ADMIN") {
+        editUser.isAdmin = Boolean(true);
+    }
+    let userGender = editModal.querySelectorAll('input[name ="gender"]:checked');
+    if (userGender !== null && userGender !== undefined && userGender.length !== 0) {
+        editUser.gender = userGender[0].value;
+    }
+    console.log(editUser);
     await fetch(edit, {
         method: 'PATCH',
-        body: JSON.stringify()
+        headers: {
+            "Content-type": "application/json; charset=UTF-8"
+        },
+        body: JSON.stringify(editUser)
     }).then((response) => response.json())
         .then((data) => console.log(data))
         .catch((error) => console.error(error));
 }
 
 
-async function deleteUser(id) {
-    const deleteU = "admin/users/delete/" + id;
+async function deleteUser() {
+    const deleteU = "admin/users/delete/" + currentId;
     await fetch(deleteU, {
         method: 'DELETE'
     })
@@ -102,17 +120,25 @@ async function newUser() {
     const requestURL = "admin/users/new";
     let role = newUserForm.querySelector('select[name ="role"]')[newUserForm
         .querySelector('select[name ="role"]').selectedIndex].value;
+
     let newUser = {
-        name: newUserForm.querySelector('input[name ="name"]').value,
+        name: newUserForm.querySelector('input[name ="name"]:required').value,
         birthday: newUserForm.querySelector('input[name ="birthday"]').value,
-        gender: newUserForm.querySelectorAll('input[name ="gender"]:checked')[0].value,
-        username: newUserForm.querySelector('input[name ="username"]').value,
-        password: newUserForm.querySelector('input[name ="password"]').value,
-        isAdmin: false
+        username: newUserForm.querySelector('input[name ="username"]:required').value,
+        password: newUserForm.querySelector('input[name ="password"]:required').value,
     }
     if (role === "ADMIN") {
-        newUser.isAdmin = true;
+        newUser.isAdmin = Boolean(true);
     }
+    let userGender = newUserForm.querySelectorAll('input[name ="gender"]:checked');
+    if (userGender !== null && userGender !== undefined && userGender.length !== 0) {
+        newUser.gender = userGender[0].value;
+    }
+    if (newUser.birthday === "") {
+        newUser.birthday = new Date()
+    }
+
+
     console.log(newUser);
     await fetch(requestURL, {
         method: 'PUT',
@@ -122,28 +148,6 @@ async function newUser() {
         body: JSON.stringify(newUser)
     })
 }
-
-// function validateForm(form) {
-//     let fail = false;
-//     const name = form.name.value;
-//     const email = form.email.value;
-//     const password = form.password.value;
-//     const role = form.role.value;
-//
-//     if (name === "") {
-//         fail = "Заполните поле name";
-//     } else if (email === "") {
-//         fail = "Заполните поле email"
-//     } else if (password === "") {
-//         fail = "Заполните поле password"
-//     } else if (role === "") {
-//         fail = "Заполните поле role"
-//     }
-//     if (fail) {
-//         alert(fail)
-//     } else window.location = "http://admin/users/newUserForm";
-//
-// }
 
 
 $(async () => {

@@ -75,8 +75,7 @@
                                             <div class="modal-dialog">
                                                 <div class="modal-content">
                                                     <table class="table mb-0 table-borderless">
-                                                        <form class="row align-items-center "
-                                                              novalidate="">
+                                                        <form class="row align-items-center ">
                                                             <div class="modal-header">
                                                                 <h1 class="modal-title fs-5"
                                                                     id="editModalLabel">
@@ -168,7 +167,8 @@
                                                                         data-bs-dismiss="modal" name="close">Close
                                                                 </button>
                                                                 <button type="submit" id="edit" name="id"
-                                                                        class="btn btn-primary" onclick="edit()">Edit
+                                                                        class="btn btn-primary" onclick="editUser()">
+                                                                    Edit
                                                                 </button>
                                                             </div>
                                                         </form>
@@ -192,8 +192,7 @@
                                                     <div class="modal-body">
                                                         <div class="mr-3 ml-3">
                                                             <table class="table table-borderless">
-                                                                <form class="row mb-3 align-items-center"
-                                                                      novalidate="">
+                                                                <form class="row mb-3 align-items-center">
                                                                     <div class="text-center">
                                                                         <div class="row mb-3 d-flex justify-content-center">
                                                                             <label class="form-label "><b>ID</b></label>
@@ -283,7 +282,7 @@
                                                         </button>
                                                         <form>
                                                             <input type="submit" value="Delete" name="id"
-                                                                   id="delete"
+                                                                   id="delete" onclick="deleteUser()"
                                                                    class="btn btn-danger"/></form>
                                                     </div>
                                                 </div>
@@ -301,7 +300,7 @@
                                     <div class="mr-3 ml-3">
                                         <table class="table table-borderless" id="newUserTable">
                                             <form id="newUserForm"
-                                                  class="row mb-3 align-items-center" novalidate=""
+                                                  class="row mb-3 align-items-center"
                                                   data-toggle="validator" role="form">
                                                 <div class="text-center">
                                                     <div class="row mb-3 d-flex justify-content-center">
@@ -336,11 +335,11 @@
                                                         </div>
                                                     </div>
                                                     <div class="row mb-3 d-flex justify-content-center">
-                                                        <label for="newUsername"
+                                                        <label for="username"
                                                                class="form-label"><b>Email</b></label>
                                                         <input type="text" class="form-control"
                                                                style="width:25%;background-color:navajowhite"
-                                                               id="newUsername" name="username"
+                                                               id="username" name="username"
                                                                aria-describedby="inputGroupPrepend2" required>
                                                     </div>
                                                     <div class="row mb-3 d-flex justify-content-center">
@@ -348,7 +347,7 @@
                                                                class="form-label"><b>Password</b></label>
                                                         <input type="password" class="form-control"
                                                                id="newPassword" name="password"
-                                                               style="width:25%">
+                                                               style="width:25%;background-color:navajowhite" required>
                                                     </div>
 
                                                     <div class="row mb-3 d-flex justify-content-center">

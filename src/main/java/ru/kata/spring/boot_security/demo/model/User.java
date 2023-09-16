@@ -48,13 +48,12 @@ public class User implements UserDetails {
         this.birthday = Date.from(Instant.now());
     }
 
-    public User(String name, String gender, String username, String password, Set<Role> rolesSet) {
+    public User(String name, String gender, String username, String password) {
         this.name = name;
         this.birthday = Date.from(Instant.now());
         this.gender = gender;
         this.username = username;
         this.password = password;
-        this.rolesSet = rolesSet;
     }
 
     public String getBirthday() {
@@ -66,13 +65,14 @@ public class User implements UserDetails {
         this.birthday = simpleDateFormat.parse(birthday);
     }
 
-    public boolean isAdmin() {
+    public boolean getIsAdmin() {
         return isAdmin;
     }
 
-    public void setAdmin(boolean admin) {
+    public void setIsAdmin(boolean admin) {
         isAdmin = admin;
     }
+
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         return getRolesSet();

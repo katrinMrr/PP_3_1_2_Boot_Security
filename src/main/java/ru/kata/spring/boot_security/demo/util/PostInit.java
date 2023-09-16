@@ -8,8 +8,6 @@ import ru.kata.spring.boot_security.demo.service.RoleService;
 import ru.kata.spring.boot_security.demo.service.UserService;
 
 import javax.annotation.PostConstruct;
-import java.util.Collections;
-import java.util.HashSet;
 
 @Component
 public class PostInit {
@@ -25,17 +23,18 @@ public class PostInit {
         roleService.saveOrUpdateRole(new Role("ROLE_USER"));
 
         String password = "321";
-        User adminUser = new User("Katya", "Woman", "admin", password, roleService.getAllRoles());
+        User adminUser = new User("Katya", "Woman", "admin", password);
+        adminUser.setIsAdmin(true);
         userService.saveOrUpdateUser(adminUser);
         System.out.println("username = " + adminUser.getUsername() + " password = " + password);
 
 
-
-        User nUser1 = new User("user2", "Woman", "user2", password, roleService.getAllRoles());
+        User nUser1 = new User("user2", "Woman", "user2", password);
+        nUser1.setIsAdmin(true);
         userService.saveOrUpdateUser(nUser1);
 
-        var role = roleService.getAllRoles().stream().filter(r -> r.getNameRole().contains("USER")).findFirst().orElse(null);
-        User nUser2 = new User("user1", "Man", "user1", password, new HashSet<>(Collections.singletonList(role)));
+
+        User nUser2 = new User("user1", "Man", "user1", password);
         userService.saveOrUpdateUser(nUser2);
     }
 }
