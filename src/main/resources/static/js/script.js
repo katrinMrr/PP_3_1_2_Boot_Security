@@ -1,16 +1,28 @@
 $(async () => {
-    await usersTopLeft();
+    await userTopLeft();
     await usersTable();
 })
 
-async function usersTopLeft() {
-    const requestURL = "/admin/users/current";
+const editForm = document.getElementById('editModal')
+editForm.addEventListener('submit', editUser)
+
+const deleteForm = document.getElementById('deleteUser')
+deleteForm.addEventListener('submit', deleteUser)
+
+const applicantForm = document.getElementById('newUserForm')
+applicantForm.addEventListener('submit', newUser)
+
+let currentId;
+
+async function userTopLeft() {
+    const requestURL = "/user/profile";
     let prev = "";
     await fetch(requestURL).then(rs => rs.json()).then(u => {
-        prev = u.name + " with role " + u.rolesSet.map(role => role.nameRole);
-        document.getElementById("text-prev").textContent = prev;
         console.log(u);
-        document.querySelector("#userTable tbody").innerHTML = ` <tr>     
+        prev = u.name + " with role " + u.rolesSet.map(role => role.nameRole);
+        document.getElementById("prevUser").textContent = prev;
+
+        document.querySelector("#tableUser tbody").innerHTML = ` <tr>     
                                             <td><p >${u.id}</p></td>
                                             <td><p >${u.name}</p></td>
                                             <td><p >${u.birthday}</p></td>
@@ -21,9 +33,9 @@ async function usersTopLeft() {
     })
 }
 
-
 async function usersTable() {
     const requestURL = "/admin/users";
+    document.querySelector("#usersTable tbody").innerHTML = ``;
     await fetch(requestURL).then(rs => rs.json()).then(u => {
         u.forEach(function (u) {
             let users = document.createElement("tr");
@@ -50,8 +62,6 @@ async function usersTable() {
     })
 }
 
-let currentId;
-
 async function openModal(id, modalName) {
     let modal = document.getElementById(modalName)
     const requestURL = "/admin/users/" + id;
@@ -74,7 +84,8 @@ async function openModal(id, modalName) {
     currentId = id;
 }
 
-async function editUser() {
+async function editUser(event) {
+    event.preventDefault();
     const edit = "admin/users/edit/";
     let editModal = document.getElementById("editModal");
     let role = editModal.querySelector('select[name ="role"]')[editModal
@@ -100,23 +111,25 @@ async function editUser() {
             "Content-type": "application/json; charset=UTF-8"
         },
         body: JSON.stringify(editUser)
-    }).then((response) => response.json())
-        .then((data) => console.log(data))
-        .catch((error) => console.error(error));
+    })
+    document.getElementById("closeButton2").click();
+    await usersTable();
 }
 
-
-async function deleteUser() {
+async function deleteUser(event) {
+    event.preventDefault();
     const deleteU = "admin/users/delete/" + currentId;
     await fetch(deleteU, {
         method: 'DELETE'
     })
+    document.getElementById("closeButton").click();
+    await usersTable();
 }
 
-
-async function newUser() {
-
-    let newUserForm = document.getElementById("nav-newUser")
+async function newUser(event) {
+    event.preventDefault();
+    let newUserForm = document.getElementById("newUserForm")
+    console.log(newUserForm);
     const requestURL = "admin/users/new";
     let role = newUserForm.querySelector('select[name ="role"]')[newUserForm
         .querySelector('select[name ="role"]').selectedIndex].value;
@@ -137,8 +150,6 @@ async function newUser() {
     if (newUser.birthday === "") {
         newUser.birthday = new Date()
     }
-
-
     console.log(newUser);
     await fetch(requestURL, {
         method: 'PUT',
@@ -147,36 +158,7 @@ async function newUser() {
         },
         body: JSON.stringify(newUser)
     })
+    document.getElementById("nav-table-tab").click();
+    await usersTable();
+    event.target.reset();
 }
-
-
-$(async () => {
-    await userTopLeft();
-})
-
-async function userTopLeft() {
-    const requestURL = "/user/profile";
-    let prev = "";
-    await fetch(requestURL).then(rs => rs.json()).then(u => {
-        // console.log(u);
-        prev = u.name + " with role " + u.rolesSet.map(role => role.nameRole);
-        document.getElementById("prevUser").textContent = prev;
-
-        document.querySelector("#tableUser tbody").innerHTML = ` <tr>     
-                                            <td><p >${u.id}</p></td>
-                                            <td><p >${u.name}</p></td>
-                                            <td><p >${u.birthday}</p></td>
-                                            <td><p >${u.gender}</p></td>
-                                            <td><p >${u.username}</p></td>
-                                        <td><p >${u.rolesSet.map(r => r.nameRole)}</p></td>
-                                       </tr>`;
-    })
-}
-
-
-
-
-
-
-
-
