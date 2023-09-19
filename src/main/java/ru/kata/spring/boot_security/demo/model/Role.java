@@ -14,11 +14,11 @@ import java.util.Set;
 public class Role implements GrantedAuthority {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long idRole;
-    @Column(name = "nameRole")
+    private Long id;
+    @Column(name = "name_Role")
     private String nameRole;
     @Transient
-    @ManyToMany(mappedBy = "rolesSet")
+    @ManyToMany(mappedBy = "roles_Set")
     private Set<User> userRoles;
 
     public Role() {
@@ -38,7 +38,7 @@ public class Role implements GrantedAuthority {
     public int hashCode() {
         final int prime = 31;
         int result = 1;
-        result = prime * result + ((idRole == null) ? 0 : idRole.hashCode());
+        result = prime * result + ((id == null) ? 0 : id.hashCode());
         return result;
     }
 
@@ -51,10 +51,10 @@ public class Role implements GrantedAuthority {
         if (getClass() != obj.getClass())
             return false;
         Role other = (Role) obj;
-        if (idRole == null) {
-            if (other.idRole != null)
+        if (id == null) {
+            if (other.id != null)
                 return false;
-        } else if (!idRole.equals(other.idRole))
+        } else if (!id.equals(other.id))
             return false;
         return true;
     }
